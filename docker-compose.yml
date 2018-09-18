@@ -1,0 +1,40 @@
+version: '3'
+services: 
+
+  mongodb:
+      image: mongo:4.0.1
+      environment:
+      # provide your credentials here
+        MONGO_INITDB_ROOT_USERNAME: alexnfsc175
+        MONGO_INITDB_ROOT_PASSWORD: LyNx123#
+        MONGO_INITDB_DATABASE: koa
+
+      ports:
+        - 27017:27017
+
+  api:
+    build: .
+    volumes:
+    - "./startup.sh:/src/startup.sh"   
+    - "./dist:/src"
+    - "./package.json:/src/package.json"
+    - "./README.md:/src/README.md"
+    links: 
+    -  mongodb
+    
+    ports:
+        - 3000:3000
+        - 9222:9222
+        
+    environment:
+      # development or production
+      NODE_ENV: development
+      API_PORT: 3000
+      # CRAWLER_INTERVAL: 30
+      DB_SEED: 'yes'
+      DB_HOST: mongodb
+      DB_PORT: 27017
+      DB_NAME: koa
+      BD_USER_NAME: alexnfsc175
+      DB_PASSWORD: LyNx123#
+  
