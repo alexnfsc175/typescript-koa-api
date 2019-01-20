@@ -6,7 +6,7 @@
     "request": "launch",
     "name": "Attach to Docker",
     "preLaunchTask": "tsc-watch",
-    "postDebugTask": "docker-stop",
+    // "postDebugTask": "docker-stop",
     "runtimeExecutable": "npm",
     "runtimeArgs": ["run", "docker:start"],
     "protocol": "inspector",

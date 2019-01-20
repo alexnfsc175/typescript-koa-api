@@ -30,22 +30,23 @@
   },
   "homepage": "https://github.com/alexnfsc175/typescript-koa-api#readme",
   "dependencies": {
-    "bcrypt": "^3.0.0",
-    "debug": "^3.1.0",
-    "koa": "^2.5.2",
-    "koa-body": "^4.0.4",
+    "bcrypt": "^3.0.3",
+    "debug": "^4.1.1",
+    "koa": "^2.6.2",
+    "koa-body": "^4.0.6",
     "koa-compose": "^4.1.0",
-    "koa-mount": "^3.0.0",
+    "koa-mount": "^4.0.0",
     "koa-router": "^7.4.0",
-    "mongoose": "^5.2.9",
-    "oauth2-server": "^3.0.0"
+    "mongoose": "^5.4.5",
+    "oauth2-server": "^3.0.1"
   },
   "devDependencies": {
-    "@types/bcrypt": "^2.0.0",
+    "@types/bcrypt": "^3.0.0",
+    "@types/debug": "^0.0.31",
     "@types/koa": "^2.0.46",
-    "@types/koa-router": "^7.0.31",
-    "@types/mongoose": "^5.2.6",
-    "@types/oauth2-server": "^3.0.8",
-    "nodemon": "^1.18.3"
+    "@types/koa-router": "^7.0.38",
+    "@types/mongoose": "^5.3.8",
+    "@types/oauth2-server": "^3.0.10",
+    "nodemon": "^1.18.9"
   }
 }
