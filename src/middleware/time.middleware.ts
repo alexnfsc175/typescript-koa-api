@@ -1,12 +1,11 @@
-import { Middleware } from '../common/middleware'
 import { Context } from 'koa';
 
-class TimeMiddleware extends Middleware {
+export default class TimeMiddleware {
+    
     constructor() {
-        super();
-        this.setPublic();
     }
-    async use(ctx: Context, next: Function) {
+
+    public static async use(ctx: Context, next: Function) {
         const start = Date.now();
         await next();
         const ms = Date.now() - start;
@@ -15,4 +14,3 @@ class TimeMiddleware extends Middleware {
     }
 }
 
-export const timeMiddleware = new TimeMiddleware();

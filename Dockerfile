@@ -1,18 +1,22 @@
-FROM node:11.5.0-alpine
+FROM node:11.8.0-alpine
 
-WORKDIR /src
+WORKDIR /usr/app
 
-COPY package*.json  startup.sh ./dist* src/
+COPY ./src/ ./src/ 
 
-RUN npm install -g node-gyp node-pre-gyp && npm install --production --silent \
-	&& npm rebuild bcrypt --build-from-source \
-	&& apk update && apk upgrade \
+COPY package*.json nodemon.json tsconfig.json startup.sh ./
+
+RUN ls
+
+RUN apk update && apk upgrade \
 	&& apk add --no-cache git \
 	&& apk --no-cache add --virtual builds-deps build-base python \
-	&& sed -i s/\r//g src/startup.sh
+	&& npm install -g node-gyp node-pre-gyp && npm install --production  \
+	&& npm rebuild bcrypt --build-from-source \
+	&& sed -i s/\r//g startup.sh
 
-EXPOSE 3000
+EXPOSE 4955
 
 EXPOSE 9222
 
-ENTRYPOINT ["sh","/src/startup.sh"] 
+ENTRYPOINT ["sh","/usr/app/startup.sh"] 

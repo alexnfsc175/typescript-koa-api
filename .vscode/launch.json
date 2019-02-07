@@ -1,24 +1,39 @@
 // https://github.com/Microsoft/vscode-recipes/tree/master/Docker-TypeScript#create-setup-manually
 {
   "version": "0.2.0",
-  "configurations": [{
-    "type": "node",
-    "request": "launch",
-    "name": "Attach to Docker",
-    "preLaunchTask": "tsc-watch",
-    // "postDebugTask": "docker-stop",
-    "runtimeExecutable": "npm",
-    "runtimeArgs": ["run", "docker:start"],
-    "protocol": "inspector",
-    "port": 9222,
-    "restart": true,
-    "timeout": 60000,
-    "localRoot": "${workspaceFolder}/dist",
-    "remoteRoot": "/src",
-    "outFiles": [
-      "${workspaceFolder}/dist/**/*.js"
-    ],
-    "console": "integratedTerminal",
-    "internalConsoleOptions": "neverOpen"
-  }]
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Attach to Docker",
+      // "preLaunchTask": "tsc-watch",
+      // "postDebugTask": "docker-stop",
+      // "runtimeExecutable": "npm",
+      // "runtimeArgs": ["run", "docker:start"],
+      "protocol": "inspector",
+      "port": 9222,
+      "restart": true,
+      // "timeout": 60000,
+      "localRoot": "${workspaceFolder}/dist",
+      "remoteRoot": "/src",
+      // "outFiles": [
+      //   "${workspaceFolder}/dist/**/*.js"
+      // ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Docker2",
+      "protocol": "inspector",
+      "port": 9222,
+      "restart": true,
+      "timeout": 60000,
+      "localRoot": "${workspaceFolder}/dist",
+      "remoteRoot": "/usr/app/dist",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**/*.js"]
+    }
+  ]
 }

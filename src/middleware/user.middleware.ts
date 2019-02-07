@@ -1,11 +1,8 @@
-import { Middleware } from '../common/middleware'
 import { Context } from 'koa';
 
-class UsersMiddleware extends Middleware {
+export default class UsersMiddleware  {
 
     constructor() {
-        super();
-        this.setPrivate();
     }
 
     async use(ctx: Context, next: Function) {
@@ -14,5 +11,3 @@ class UsersMiddleware extends Middleware {
         return next();
     }
 }
-
-export const usersMiddleware = new UsersMiddleware();

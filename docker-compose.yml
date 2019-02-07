@@ -1,35 +1,39 @@
-version: '3'
+version: '3.7'
 services: 
 
   mongodb:
-      image: mongo:4.1.6
+      image: mongo:4.0.5
       environment:
       # provide your credentials here
         MONGO_INITDB_ROOT_USERNAME: alexnfsc175
         MONGO_INITDB_ROOT_PASSWORD: LyNx123#
         MONGO_INITDB_DATABASE: koa
-
       ports:
-        - 27017:27017
+        - 5837:27017
+      volumes: 
+      - ./src/database/data:/data/db
+      command: mongod --auth
+      container_name: koa-db
 
   api:
     build: .
     volumes:
-    - "./startup.sh:/src/startup.sh"   
-    - "./dist:/src"
-    - "./package.json:/src/package.json"
-    - "./README.md:/src/README.md"
+    - ./startup.sh:/usr/app/startup.sh   
+    - ./dist:/usr/app/dist
+    - ./src:/usr/app/src
+    - ./package.json:/usr/app/package.json
+    - ./nodemon.json:/usr/app/nodemon.json
+    - ./README.md:/usr/app/README.md
     links: 
     -  mongodb
-    
     ports:
-        - 3000:3000
+        - 4955:4955
         - 9222:9222
-        
+    container_name: koa-api
     environment:
       # development or production
       NODE_ENV: development
-      API_PORT: 3000
+      API_PORT: 4955
       # CRAWLER_INTERVAL: 30
       DB_SEED: 'yes'
       DB_HOST: mongodb

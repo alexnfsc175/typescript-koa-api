@@ -6,6 +6,11 @@
         "module": "commonjs"
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "**/*.spec.ts",
+        "**/*.test.ts"
+    ],
+    "include": [
+        "src/**/*.ts"
     ]
 }

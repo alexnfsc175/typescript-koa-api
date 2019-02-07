@@ -63,20 +63,29 @@ export class KoaOAuthServer {
         this.debug('Creating authentication endpoint middleware');
         return async (ctx, next) => {
             this.debug('Running authenticate endpoint middleware');
-            const request = new Request(ctx.request),
-                response = new Response(this.fixHeaders(ctx.response));
+            try {                
+                const request = new Request(ctx.request),
+                    response = new Response(ctx.response);
+                    // response = new Response(this.fixHeaders(ctx.response));
+                
+                let token = await this.server.authenticate(request, response, options);
+                ctx.state.oauth = {token: token};
+                await next();
+            } catch (error) {
+                return this.handleError(error, ctx);
+            }
 
-            await this.server
-                .authenticate(request, response, options)
-                .then(async (token) => {
-                    ctx.state.oauth = {
-                        token: token
-                    };
-                    await next();
-                })
-                .catch((err) => {
-                    this.handleError(err, ctx);
-                });
+            // await this.server
+            //     .authenticate(request, response, options)
+            //     .then(async (token) => {
+            //         ctx.state.oauth = {
+            //             token: token
+            //         };
+            //         await next();
+            //     })
+            //     .catch((err) => {
+            //         this.handleError(err, ctx);
+            //     });
         };
     }
 
@@ -90,7 +99,8 @@ export class KoaOAuthServer {
 
             //
             const request = new Request(ctx.request),
-                response = new Response(this.fixHeaders(ctx.response));
+                response = new Response(ctx.response);
+                // response = new Response(this.fixHeaders(ctx.response));
 
             await this.server
                 .authorize(request, response, options)
@@ -113,24 +123,36 @@ export class KoaOAuthServer {
         this.debug('Creating token endpoint middleware');
         return async (ctx, next) => {
             this.debug('Running token endpoint middleware');
-            const request = new Request(ctx.request),
-                response = new Response(this.fixHeaders(ctx.response));
+            try {
+                
+                const request = new Request(ctx.request),
+                    response = new Response(this.fixHeaders(ctx.response));
+    
+                let token = await this.server.token(request, response);
+                token = await this.saveTokenMetadata(token, ctx.request); 
+                ctx.state.oauth = { token: token };
+                this.handleResponse(ctx, response);
+                return next();
+            } catch (error) {
+                this.handleError(error, ctx);
+            }
 
-            await this.server
-                .token(request, response)
-                .then((token) => {
-                    return this.saveTokenMetadata(token, ctx.request);
-                })
-                .then(async (token) => {
-                    ctx.state.oauth = {
-                        token: token
-                    };
-                    this.handleResponse(ctx, response);
-                    // await next();
-                })
-                .catch((err) => {
-                    this.handleError(err, ctx);
-                });
+            // this.server
+            //     .token(request, response)
+            //     .then((token) => {
+            //         return this.saveTokenMetadata(token, ctx.request);
+            //     })
+            //     .then(async (token) => {
+            //         ctx.state.user ={name:"Alex"}
+            //         ctx.state.oauth = {
+            //             token: token
+            //         };
+            //         this.handleResponse(ctx, response);
+            //         next();
+            //     })
+            //     .catch((err) => {
+            //         this.handleError(err, ctx);
+            //     });
         };
     }
 

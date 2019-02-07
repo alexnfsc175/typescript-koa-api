@@ -135,7 +135,7 @@ class OAuthModel {
 
     revokeToken(token: Token, next: any) {
         console.log('revokeToken');
-        OAuthToken.findOneAndRemove({
+        OAuthToken.findOneAndDelete({
             accessToken: token.accessToken
         }, next);
     }
@@ -166,7 +166,8 @@ class OAuthModel {
             return false;
         }
         let requestedScopes = scope.split(' ');
-        let authorizedScopes = token.scope.split(' ');
+        let authorizedScopes = (token.scope as string).split(' '); // token.scope.split(' ');
+        
         return requestedScopes.every(s => authorizedScopes.indexOf(s) >= 0);
     };
 }
