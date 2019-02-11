@@ -1,19 +1,18 @@
-import { IUser, UserModel } from "../models/user.model";
+import { AccountModel, IAccount } from "../models/account.model";
 import { Context } from "koa";
-import { OAuthClientModel } from "../models/oauth-client.model";
 
 /**
  * @export
- * @class UserController
+ * @class AccountController
  */
-export default class UserController {
+export default class AccountController {
   /**
    * @param {Context} ctx
    * @param {Function} next
-   * @memberof UserController
+   * @memberof AccountController
    */
   static async findAll(ctx: Context, next: Function) {
-    const users: IUser[] = await UserModel.find();
+    const users: IAccount[] = await AccountModel.find();
 
     ctx.body = users;
     ctx.status = 200;
@@ -22,14 +21,10 @@ export default class UserController {
   /**
    * @param {Context} ctx
    * @param {Function} next
-   * @memberof UserController
+   * @memberof AccountController
    */
   static async find(ctx: Context, next: Function) {
-    const user: IUser = await UserModel.findOne({
-      _id: ctx.params.id
-    }).populate({ path: "account", select: { email: 1, active: 1 } });
-
-
+    const user: IAccount = await AccountModel.findOne({ _id: ctx.params.id });
 
     ctx.body = user;
     ctx.status = 200;
@@ -38,24 +33,24 @@ export default class UserController {
   /**
    * @param {Context} ctx
    * @param {Function} next
-   * @memberof UserController
+   * @memberof AccountController
    */
   static async create(ctx: Context, next: Function) {
-    const user: IUser = await UserModel.create(ctx.request.body);
+    const user: IAccount = await AccountModel.create(ctx.request.body);
 
     ctx.body = user;
-    ctx.status = 200;
+    return (ctx.status = 200);
   }
 
   /**
    * @param {Context} ctx
    * @param {Function} next
-   * @memberof UserController
+   * @memberof AccountController
    */
   static async delete(ctx: Context, next: Function) {
-    const deleted = await UserModel.deleteOne({ _id: ctx.params.id });
+    const deleted = await AccountModel.deleteOne({ _id: ctx.params.id });
 
     ctx.body = deleted;
-    ctx.status = 200;
+    return (ctx.status = 200);
   }
 }

@@ -30,10 +30,10 @@
       "port": 9222,
       "restart": true,
       "timeout": 60000,
-      "localRoot": "${workspaceFolder}/dist",
-      "remoteRoot": "/usr/app/dist",
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/usr/app",
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "skipFiles": ["<node_internals>/**/*.js"]
+      // "skipFiles": ["<node_internals>/**/*.js"]
     }
   ]
 }

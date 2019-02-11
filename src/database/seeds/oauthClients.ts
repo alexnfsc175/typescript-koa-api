@@ -1,7 +1,7 @@
-import { OAuthClient } from '../../models/oauth-client.model'
+import { OAuthClientModel } from '../../models/oauth-client.model'
 
 const OAuthClients = [
-    new OAuthClient({
+    new OAuthClientModel({
         name: 'KOA 2',
         clientId: 'typescript-koa',
         clientSecret: 'typescript@koa',
