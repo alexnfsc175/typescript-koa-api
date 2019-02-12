@@ -1,17 +1,13 @@
-// import * as bodyParser from "body-parser";
 import * as compression from "koa-compress";
-// import * as cookieParser from "cookie-parser";
 import * as cors from "@koa/cors";
 import * as serve from 'koa-static';
-// import * as express from "express";
-// import * as helmet from "helmet";
 import * as koaBody from "koa-body";
 import * as mount from 'koa-mount';
-// import * as path from 'path';
 import { CustomResponse, IServer } from "../interfaces/ServerInterface";
 import { HttpError } from "../error/index";
-// import { renderFile } from 'ejs';
 import { sendHttpErrorModule } from "../error/sendHttpError";
+import  TimeMiddleware  from './time.middleware';
+import  UsersMiddleware from './user.middleware';
 import { Context } from "koa";
 
 /**
@@ -60,8 +56,13 @@ export default class Middleware {
     // server.app.engine('html', renderFile);
     // server.app.set('view engine', 'ejs');
 
+
+
     // custom errors
     server.app.use(sendHttpErrorModule);
+
+    // my middlewares
+    server.app.use(TimeMiddleware.use);
 
     // cors
     server.app.use(async (ctx, next) => {

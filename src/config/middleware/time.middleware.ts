@@ -9,7 +9,7 @@ export default class TimeMiddleware {
         const start = Date.now();
         await next();
         const ms = Date.now() - start;
-        console.log(`${ms} ms`)
+        console.log(`${ctx.method} ${ctx.originalUrl} - ${ms} ms`)
         ctx.set('X-Response-Time', `${ms}ms`);
     }
 }

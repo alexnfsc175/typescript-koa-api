@@ -191,22 +191,22 @@ class OAuthModel {
     return requestedScopes.every(s => authorizedScopes.indexOf(s) >= 0);
   }
 
-  // Helpers
-  generateAccessToken(client, user, scope) {
-    return this.generateRandomToken();
-  }
-  generateRefreshToken(client, user, scope) {
-    return this.generateRandomToken();
-  }
-  generateAuthorizationCode(client, user, scope) {
-    return this.generateRandomToken();
-  }
-  generateRandomToken() {
-    let buffer = randomBytes(256);
-    return createHash("sha512WithRSAEncryption")
-      .update(buffer)
-      .digest("hex");
-  }
+  // Helpers _ Se o tken for muito grante crash no grant_type=authorization_code
+  // generateAccessToken(client, user, scope) {
+  //   return this.generateRandomToken();
+  // }
+  // generateRefreshToken(client, user, scope) {
+  //   return this.generateRandomToken();
+  // }
+  // generateAuthorizationCode(client, user, scope) {
+  //   return this.generateRandomToken();
+  // }
+  // generateRandomToken() {
+  //   let buffer = randomBytes(256);
+  //   return createHash("sha512WithRSAEncryption")
+  //     .update(buffer)
+  //     .digest("hex");
+  // }
 }
 
 export const oAuthModel = new OAuthModel();

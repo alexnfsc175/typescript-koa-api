@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# if [ $DB_SEED = "yes" ]; then
-#   sleep 6 && npm run seed
-#   # sleep 6 && node src/database/seeds/run.js
-# fi
+if [ $DB_SEED = "yes" ]; then
+  sleep 6 && npm run seed
+  # sleep 6 && node src/database/seeds/run.js
+fi
 
 if [ $NODE_ENV = "production" ]; then
   npm install --production --silent && npm run start;
