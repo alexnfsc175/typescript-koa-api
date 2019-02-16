@@ -72,7 +72,7 @@ class OAuthModel {
     token: Token,
     client: Client,
     account: IAccount
-  ): Promise<IAccount> {
+  ): Promise<any> {
     let accessToken = new OAuthTokenModel({
       accessToken: token.accessToken,
       accessTokenExpiresAt: token.accessTokenExpiresAt,
@@ -85,11 +85,22 @@ class OAuthModel {
     });
 
     accessToken = await accessToken.save();
+    accessToken = accessToken.toObject();
 
     // para alterar o campo user para account
-    let model = Object.assign({}, { user: account }, accessToken.toObject());
+    // let model = Object.assign({}, { user: {id:account.id} }, );
+    // model.account = account.id;
 
-    return model;
+
+    return {
+      accessToken: accessToken.accessToken,
+      accessTokenExpiresAt: accessToken.accessTokenExpiresAt,
+      refreshToken: accessToken.refreshToken,
+      scope: accessToken.scope,
+      client:accessToken.client,
+      account:account.id,
+      user:{id:account.id}
+    };
   }
 
   grantTypeAllowed(clientId: string, grantType: string, next: Function) {

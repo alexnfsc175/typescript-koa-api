@@ -10,6 +10,7 @@ export default class TimeMiddleware {
         await next();
         const ms = Date.now() - start;
         console.log(`${ctx.method} ${ctx.originalUrl} - ${ms} ms`)
+        ctx.set('X-Powered-By', 'PHP/7.3.2');// fake application!
         ctx.set('X-Response-Time', `${ms}ms`);
     }
 }

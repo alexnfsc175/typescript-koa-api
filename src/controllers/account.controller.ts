@@ -12,9 +12,9 @@ export default class AccountController {
    * @memberof AccountController
    */
   static async findAll(ctx: Context, next: Function) {
-    const users: IAccount[] = await AccountModel.find();
+    const accounts: IAccount[] = await AccountModel.find();
 
-    ctx.body = users;
+    ctx.body = accounts;
     ctx.status = 200;
   }
 
@@ -24,9 +24,9 @@ export default class AccountController {
    * @memberof AccountController
    */
   static async find(ctx: Context, next: Function) {
-    const user: IAccount = await AccountModel.findOne({ _id: ctx.params.id });
+    const account: IAccount = await AccountModel.findOne({ _id: ctx.params.id });
 
-    ctx.body = user;
+    ctx.body = account;
     ctx.status = 200;
   }
 
@@ -36,9 +36,9 @@ export default class AccountController {
    * @memberof AccountController
    */
   static async create(ctx: Context, next: Function) {
-    const user: IAccount = await AccountModel.create(ctx.request.body);
+    const account: IAccount = await AccountModel.create(ctx.request.body);
 
-    ctx.body = user;
+    ctx.body = account;
     return (ctx.status = 200);
   }
 

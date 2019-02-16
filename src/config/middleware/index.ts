@@ -1,15 +1,16 @@
 import * as compression from "koa-compress";
 import * as cors from "@koa/cors";
-import * as serve from 'koa-static';
+import * as serve from "koa-static";
 import * as koaBody from "koa-body";
-import * as mount from 'koa-mount';
+import * as mount from "koa-mount";
 import { CustomResponse, IServer } from "../interfaces/ServerInterface";
 import { HttpError } from "../error/index";
 import { sendHttpErrorModule } from "../error/sendHttpError";
-import  TimeMiddleware  from './time.middleware';
-import  UsersMiddleware from './user.middleware';
+import TimeMiddleware from "./time.middleware";
+import UsersMiddleware from "./user.middleware";
 import { Context } from "koa";
-
+import Log from "../../helpers/Log";
+import FaviconMiddleware from "./favicon.middleware";
 /**
  * @export
  * @class Middleware
@@ -21,15 +22,14 @@ export default class Middleware {
    * @memberof Middleware
    */
   static init(server: IServer): void {
-    
-    server.app.use(mount('/static', serve(__dirname + '../controllers')));
+    server.app.use(mount("/static", serve(__dirname + "../controllers")));
 
     // express middleware
     server.app.use(
       koaBody({
-        multipart: true,
-        formLimit: "5mb",
-        formidable: { maxFileSize: 200 * 1024 * 1024 }
+        // multipart: true, // Não Usar junto com o busboy
+        // formLimit: "5mb",
+        // formidable: { maxFileSize: 200 * 1024 * 1024 }
       })
     );
     // server.app.use(bodyParser.json());
@@ -56,32 +56,29 @@ export default class Middleware {
     // server.app.engine('html', renderFile);
     // server.app.set('view engine', 'ejs');
 
-
-
     // custom errors
     server.app.use(sendHttpErrorModule);
 
     // my middlewares
     server.app.use(TimeMiddleware.use);
+    server.app.use(FaviconMiddleware.config())
 
     // cors
     server.app.use(async (ctx, next) => {
-        
       ctx.set({
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS"
       });
       ctx.set({
-        'Access-Control-Allow-Headers': 
-        "Origin, X-Requested-With," +
+        "Access-Control-Allow-Headers":
+          "Origin, X-Requested-With," +
           " Content-Type, Accept," +
           " Authorization," +
           " Access-Control-Allow-Credentials," +
           " X-Accepted-OAuth-Scopes"
       });
-      ctx.set({'Access-Control-Allow-Credentials': 'true'});
+      ctx.set({ "Access-Control-Allow-Credentials": "true" });
       await next();
     });
-    
   }
 
   /**
@@ -91,8 +88,8 @@ export default class Middleware {
    */
   static initErrorHandler(server: IServer): void {
     server.app.use(async (ctx: Context, next: Function) => {
-      
-        await next().catch((error) => {
+      await next().catch(error => {
+        const originalError = error;
         if (typeof error === "number") {
           error = new HttpError(error); // next(404)
         }
@@ -108,7 +105,7 @@ export default class Middleware {
             ctx.sendHttpError(error, error.message);
           }
         }
-
+        if (originalError && originalError.stack) Log.error(originalError.stack);
         console.error(error);
       });
     });

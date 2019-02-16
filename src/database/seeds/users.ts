@@ -47,9 +47,9 @@ export default class UserMigration implements Migration<IUser> {
     });
 
     await new OAuthClientModel({
-      name: "KOA 2",
-      clientId: "typescript-koa",
-      clientSecret: "typescript@koa",
+      name: "Lmx Lógistica",
+      clientId: "lmx-logistica",
+      clientSecret: "lmx-logistica@password",
       account: account._id,
       grants: [
         "client_credentials",

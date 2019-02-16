@@ -18,7 +18,6 @@ import {
 } from "oauth2-server";
 import * as Debug from "debug";
 
-
 export class KoaOAuthServer {
   debug = Debug("koa:oauth2-server");
   options: any;
@@ -165,7 +164,9 @@ export class KoaOAuthServer {
       };
     }
 
-    ctx.app.emit("error", err, ctx);
+    throw err;
+
+    // ctx.app.emit("error", err, ctx);
   }
 
   private isOAuthError(err) {

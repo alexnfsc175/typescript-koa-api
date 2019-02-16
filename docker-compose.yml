@@ -22,6 +22,7 @@ services:
     - ./dist:/usr/app/dist
     - ./src:/usr/app/src
     - ./package.json:/usr/app/package.json
+    - ./tsconfig.json:/usr/app/tsconfig.json
     - ./nodemon.json:/usr/app/nodemon.json
     - ./README.md:/usr/app/README.md
     links: 

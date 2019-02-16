@@ -14,4 +14,4 @@ try {
 
 // merge the config files
 // localConfig will override defaults
-export default (< any > Object).assign({}, config, localConfig);
+export default (< any > Object).assign({}, config, localConfig.envConfig);

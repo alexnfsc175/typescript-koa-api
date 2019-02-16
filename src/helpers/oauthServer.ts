@@ -13,6 +13,7 @@ export const oauthServer = new KoaOAuthServer({
     refreshTokenLifetime: 604800, //7 days
 
     allowBearerTokensInQueryString: true, 
+    allowExtendedTokenAttributes: true,
     addAcceptedScopesHeader: true,
     addAuthorizedScopesHeader: true,
 });

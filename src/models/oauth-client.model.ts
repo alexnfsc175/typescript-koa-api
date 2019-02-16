@@ -10,7 +10,7 @@ export interface IOAuthClient extends Document {
   clientSecret: string;
   grants: [string];
   scope: string;
-  redirectUris: [string];
+  redirectUris: string[];
   accessTokenLifetime: Number; //Client-specific lifetime of generated access tokens in seconds.
   refreshTokenLifetime: Number; //Client-specific lifetime of generated refresh tokens in seconds.
 }

@@ -19,6 +19,13 @@ export default class UserController {
     ctx.status = 200;
   }
 
+  static async authenticated(ctx: Context, next: Function) {
+    const users: IUser[] = await UserModel.find();
+
+    ctx.body = users;
+    ctx.status = 200;
+  }
+
   /**
    * @param {Context} ctx
    * @param {Function} next
