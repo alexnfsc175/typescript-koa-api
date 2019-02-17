@@ -14,7 +14,6 @@ export interface IOAuthToken extends Document {
   refreshTokenExpiresAt: Date;
   scope: string;
   account: IAccount | string; // o pacote oauth-server obriga que tenha esse nome
-  userId: string;
 }
 
 let schema = new Schema(

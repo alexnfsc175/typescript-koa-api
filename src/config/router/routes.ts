@@ -9,6 +9,7 @@ import HolidayRouter from "./holiday.router";
 import ReportRouter from "./report.router";
 import AttachmentRouter from "./attachment.router";
 import InvoiceRouter from "./invoice.router";
+import Util from "../../helpers/Util";
 
 // https://github.com/sohamkamani/node-oauth-example/blob/master/index.js
 
@@ -56,6 +57,19 @@ export default class Routes {
         ctx.status = 200;
       })
     );
+
+
+    //TESTE
+    // server.app.use(mount("/routers", async (ctx: any, next: Function)=>{
+    //   let routes = await Util.getInstance().getExpressRotes({
+    //     express: server.app,
+    //     except: ['oauth/token']
+    // });
+
+    // ctx.body = routes;
+    // ctx.status = 200;
+    // }));
+    //TESTE
 
     server.app
       .use(mount("/api/v1/users", UserRouter.router.routes()))

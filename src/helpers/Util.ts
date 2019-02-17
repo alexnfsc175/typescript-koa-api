@@ -103,7 +103,7 @@ export default class Util {
     // return `${days} dia(s) ${hours} hora(s) ${minutes} minuto(s) e ${seconds} segundo(s)`;
   }
 
-  getExpressRotes = async function(options) {
+  async getExpressRotes (options) {
     let app = options.express || {};
     let except = options.except || {};
 
