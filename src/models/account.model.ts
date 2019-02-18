@@ -1,7 +1,8 @@
 // https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
 import * as bcrypt from 'bcrypt';
-import { Document, Schema } from "mongoose"
+import { Document, Schema, Types } from "mongoose"
 import * as connections from '../config/connection/connection';
+import { IRole } from './role.model';
 
 export interface IAccount extends Document {
     id?: any;
@@ -9,6 +10,7 @@ export interface IAccount extends Document {
     password: string;
     active: boolean;
     type: string
+    role: IRole
     // photo: string;
     generateHash(password: any):string;
     validPassword(hash: string, password: any):boolean;
@@ -31,6 +33,11 @@ let schema = new Schema({
     },
     type:{
         type: String
+    },
+    role:{
+        type: Types.ObjectId,
+        ref: "role",
+        required: true
     }
     // photo: {
     //     type: String

@@ -2,6 +2,7 @@ import { UserModel, IUser } from "../../models/user.model";
 import { AccountModel } from "../../models/account.model";
 import { Migration } from "./Migrate";
 import { OAuthClientModel } from "../../models/oauth-client.model";
+import { RoleModel } from "../../models/role.model";
 
 // const Users = [
 //   accountID =>
@@ -31,9 +32,25 @@ import { OAuthClientModel } from "../../models/oauth-client.model";
 
 export default class UserMigration implements Migration<IUser> {
   async run(): Promise<IUser> {
+    let userRole = new RoleModel({
+      name: "user",
+      can: ["account", "post:add", "post:save", "user:create"]
+    });
+
+    userRole = await userRole.save();
+
+    let managerRole = new RoleModel({
+      name: "manager",
+      can: ["post:save", "post:delete", "account:*"],
+      inherits: [userRole._id]
+    });
+
+    managerRole = await managerRole.save();
+
     let account = new AccountModel({
       email: "admin@admin.com.br",
-      password: "linux123"
+      password: "linux123",
+      role: managerRole._id
     });
 
     account = await account.save();
@@ -58,8 +75,8 @@ export default class UserMigration implements Migration<IUser> {
         "password"
       ],
       redirectUris: [
-        'http://localhost:3000/oauth2/callback',
-        'http://localhost:4955/oauth/callback'
+        "http://localhost:3000/oauth2/callback",
+        "http://localhost:4955/oauth/callback"
       ],
       accessTokenLifetime: 60 * 60, // 1 hour
       refreshTokenLifetime: 60 * 60 * 24 * 7, // 1 week

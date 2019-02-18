@@ -11,18 +11,33 @@ export default class RBAC {
     private _inited: boolean;
     private roles: Map<any, any>;
     private _init: Promise<void>
+    private static _default: RBAC;
 
     constructor(roles) {
       this._inited = false;
       if(typeof roles !== 'function' && typeof roles.then !== 'function') {
         this.debug('sync init');
         // Add roles to class and mark as inited
-        this.roles = this._parseRoleMap(roles);
+        // this.roles = this._parseRoleMap(roles);
+        this.roles = this._parseRoleDocumentMap(roles);
         this._inited = true;
       } else {
         this.debug('async init');
         this._init = this.asyncInit(roles);
       }
+    }
+
+    static isInitialized(){
+      return !!RBAC._default;
+    }
+    static getInstance(roles?): RBAC {
+      if(!RBAC._default && !roles){
+        throw new TypeError('Expected input to be object');
+      }
+      if (!RBAC._default) {
+        RBAC._default = new RBAC(roles);
+      }
+      return RBAC._default;
     }
 
     _parseRoleMap(roles) {
@@ -85,6 +100,81 @@ export default class RBAC {
 
         map.set(role, roleObj);
       });
+
+      return map;
+    }
+
+    _parseRoleDocumentMap(roles) {
+      this.debug('parsing rolemap');
+      // If not a function then should be object
+      if(typeof roles !== 'object') {
+        throw new TypeError('Expected input to be object');
+      }
+
+      let map = new Map();
+
+      // Standardize roles
+      roles.forEach(role => {
+        let roleObj:any = {
+          can: {},
+          canGlob: []
+        };
+
+        // Check can definition
+        if(!Array.isArray(role.can)) {
+          throw new TypeError('Expected roles[' + role + '].can to be an array');
+        }
+        if(role.inherits) {
+          if(!Array.isArray(role.inherits)) {
+            throw new TypeError('Expected roles[' + role + '].inherits to be an array');
+          }
+          roleObj.inherits = [];
+          role.inherits.forEach(child => {
+            // if(typeof child !== 'string') {
+            //   throw new TypeError('Expected roles[' + role + '].inherits element');
+            // }
+            let roleIndex = roles.findIndex(r => {
+              return r.name == role.name;
+            });
+            if(roleIndex === -1) {
+              throw new TypeError('Undefined inheritance role: ' + child.name);
+            }
+            roleObj.inherits.push(child.name);
+          });
+        }
+        // Iterate allowed operations
+        role.can.forEach(operation => {
+          // If operation is string
+          if(typeof operation === 'string') {
+            // Add as an operation
+            if(!isGlob(operation)) {
+              roleObj.can[operation] = 1;
+            } else {
+              roleObj.canGlob.push({name: globToRegex(operation), original: operation});
+            }
+            return;
+          }
+          // Check if operation has a .when function
+          if(typeof operation.when === 'function' && typeof operation.name === 'string') {
+            if(!isGlob(operation.name)) {
+              roleObj.can[operation.name] = operation.when;
+            } else {
+              roleObj.canGlob.push({name: globToRegex(operation.name), original: operation.name, when: operation.when});
+            }
+            return;
+          }
+          throw new TypeError(`Unexpected operation type ${operation}`);
+        });
+
+        map.set(role.name, roleObj);        
+      });
+      // Object.keys(roles).forEach(role => {
+      //   let roleObj:any = {
+      //     can: {},
+      //     canGlob: []
+      //   };
+        
+      // });
 
       return map;
     }
@@ -191,6 +281,7 @@ export default class RBAC {
     }
 
     static create(opts){
-        return new RBAC(opts);
+        // return new RBAC(opts);
+       return RBAC.getInstance(opts);
     }
 }
