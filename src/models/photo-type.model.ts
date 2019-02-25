@@ -35,7 +35,7 @@ let schema = new Schema(
   }
 );
 
-export let PhotoTypeModel = connections.db.model<IPhotoType>(
+export default connections.db.model<IPhotoType>(
   "phototype",
   schema,
   "phototypes"

@@ -1,7 +1,7 @@
 import { Document, Schema, Types } from 'mongoose';
 import * as connections from '../config/connection/connection';
-import { IAccount } from './account.model';
-import { ICustomer } from './customer.model';
+import AccountModel, { IAccount } from './account.model';
+import CustomerModel, { ICustomer } from './customer.model';
 
 export interface IPanel extends Document {
   id?: any;
@@ -15,7 +15,7 @@ export interface IPanel extends Document {
 let schema = new Schema(
   {
     account: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'account',
       required: true
     },
@@ -23,12 +23,12 @@ let schema = new Schema(
       type: String,
       required: true
     },
-    urlLogo: {
+    logo: {
       type: String
     },
     customers: [
       {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'customer',
         required: true
       }
@@ -49,4 +49,4 @@ let schema = new Schema(
   }
 );
 
-export let PanelModel = connections.db.model<IPanel>('panel', schema, 'panels');
+export default connections.db.model<IPanel>('panel', schema, 'panels');

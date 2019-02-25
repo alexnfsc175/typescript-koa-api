@@ -1,11 +1,12 @@
 "use strict";
 
 import { Context } from "koa";
-import { CustomerModel, ICustomer } from "../models/customer.model";
-import { AccountModel, IAccount } from "../models/account.model";
+import CustomerModel, { ICustomer } from "../models/customer.model";
+import AccountModel, { IAccount } from "../models/account.model";
 import LmxSP from "../helpers/LmxSP";
-import { UserModel, IUser } from "../models/user.model";
+import UserModel, { IUser } from "../models/user.model";
 import { QueryParameters } from "./query-parameters";
+import RoleModel from "../models/role.model";
 
 export default class CustomerController {
   static async getActive(ctx: Context, next: Function) {
@@ -30,15 +31,10 @@ export default class CustomerController {
     ctx.body = clients;
     ctx.status = 200;
   }
-  static async getRemote(ctx: Context, next: Function) {
-    let clients = await LmxSP.getInstance().getClients();
-    ctx.body = clients;
-    ctx.status = 200;
-  }
   static async getId(ctx: Context, next: Function) {
     let client = await CustomerModel.findOne({
       _id: ctx.params.id
-    }).populate("user", {
+    }).populate("account", {
       password: 0
     });
     ctx.body = client;
@@ -47,7 +43,7 @@ export default class CustomerController {
   static async getAll(ctx: Context, next: Function) {
     let clients = await CustomerModel.find({})
       .populate({
-        path: "user",
+        path: "account",
         select: "-password -permissions" //Não traz esses dois campos
       })
       .lean();
@@ -56,87 +52,110 @@ export default class CustomerController {
     ctx.status = 200;
   }
   static async update(ctx: Context, next: Function) {
-    let params = ctx.request.body;
-    let user = await UserModel.findById({
-      _id: params.user._id
-    });
+    const { account, deliveryTime, name, code, logo } = ctx.request.body;
 
-    if (!user) {
-      ctx.body = {
-        status: 404,
-        name: "Error",
-        message: "O Usuario não existe!!!"
-      };
-      ctx.status = 404;
-    }
-
-    if (params.user.password) {
-      params.user.password = UserModel.schema.methods.generateHash(
-        params.user.password
+    if (account && account.password) {
+      account.password = AccountModel.schema.methods.generateHash(
+        account.password
       );
     }
 
-    let insertU = await UserModel.findOneAndUpdate(
+    let updateData: any = { deliveryTime, name, code }
+
+    if(logo){
+      updateData = {...updateData, logo};
+    }
+
+    let acc = await AccountModel.findOneAndUpdate(
       {
-        _id: params.user._id
+        _id: account._id
       },
-      params.user
+      account,
+      { new: true }
     );
 
-    if (!insertU) {
-      ctx.body = {
-        status: 404,
-        name: "Error",
-        message: "Não foi possivel iserir o usuario!!!"
-      };
-      ctx.status = 404;
-    }
-
-    params.user = insertU;
-    let insertC = await CustomerModel.findOneAndUpdate(
+    let customer = await CustomerModel.findOneAndUpdate(
       {
-        user: params.user
+        account: acc._id
       },
-      params
+      updateData,
+      { new: true }
     );
 
-    if (!insertC) {
-      ctx.body = {
-        status: 404,
-        name: "Error",
-        message: "Não foi possivel atualizar o cliente!!!"
-      };
-      ctx.status = 404;
-    }
+    // let insertU = await UserModel.findOneAndUpdate(
+    //   {
+    //     _id: params.user._id
+    //   },
+    //   params.user
+    // );
 
-    ctx.body = insertC;
-    ctx.status = 201;
-  }
-  static async save(ctx: Context, next: Function) {
-    let client,
-      params = ctx.request.body;
-    if (params.user) {
-      params.user.password = UserModel.schema.methods.generateHash(
-        params.user.password
-      );
-      params.user.permissions = [
-        {
-          type: "client",
-          roles: ["read"]
-        }
-      ];
-      params.user = await UserModel.create(params.user);
-    }
-    if (params.user) {
-      client = await CustomerModel.create(params);
-    }
-    ctx.body = client;
-    ctx.status = 201;
-  }
+    // if (!insertU) {
+    //   ctx.body = {
+    //     status: 404,
+    //     name: "Error",
+    //     message: "Não foi possivel iserir o usuario!!!"
+    //   };
+    //   ctx.status = 404;
+    // }
 
-  static async allRemote(ctx: Context, next: Function) {
-    let clients = await LmxSP.getInstance().getClients();
-    ctx.body = clients;
+    // params.user = insertU;
+    // let insertC = await CustomerModel.findOneAndUpdate(
+    //   {
+    //     user: params.user
+    //   },
+    //   params
+    // );
+
+    // if (!insertC) {
+    //   ctx.body = {
+    //     status: 404,
+    //     name: "Error",
+    //     message: "Não foi possivel atualizar o cliente!!!"
+    //   };
+    //   ctx.status = 404;
+    // }
+
+    ctx.body = customer;
     ctx.status = 200;
   }
+  static async save(ctx: Context, next: Function) {
+    // let client,
+    //   params = ctx.request.body;
+    const { account, code, deliveryTime, name, logo } = ctx.request.body;
+
+    // account.password = AccountModel.schema.methods.generateHash(
+    //   account.password
+    // );
+
+    let role = await RoleModel.findOne({ name: "customer" });
+    account.role = role.id;
+    let accountCreated = await AccountModel.create({
+      active: account.active,
+      email: account.email,
+      password: account.password,
+      role: role.id
+    });
+
+    let customer = await CustomerModel.create({
+      code,
+      deliveryTime,
+      name,
+      logo,
+      account: accountCreated.id
+    });
+
+    ctx.body = customer;
+    ctx.status = 201;
+  }
+  // static async allRemote(ctx: Context, next: Function) {
+  //   let clients = await LmxSP.getInstance().getClients();
+  //   ctx.body = clients;
+  //   ctx.status = 200;
+  // }
+
+  // static async getRemote(ctx: Context, next: Function) {
+  //   let clients = await LmxSP.getInstance().getClients();
+  //   ctx.body = clients;
+  //   ctx.status = 200;
+  // }
 }

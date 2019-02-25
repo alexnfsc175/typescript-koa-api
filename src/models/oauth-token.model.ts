@@ -1,8 +1,8 @@
 // https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
 import { Document, Schema, Types } from "mongoose";
 import * as connections from "../config/connection/connection";
-import { IOAuthClient } from "./oauth-client.model";
-import { IAccount } from './account.model';
+import OauthClientModel, { IOAuthClient } from "./oauth-client.model";
+import AccountModel, { IAccount } from './account.model';
 
 export interface IOAuthToken extends Document {
   id?: any;
@@ -25,7 +25,7 @@ let schema = new Schema(
     },
     accessTokenExpiresAt: { type: Date },
     client: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "oauthclient"
     }, 
     clientId: String,
@@ -33,7 +33,7 @@ let schema = new Schema(
     refreshTokenExpiresAt: { type: Date },
     scope: { type: String },
     account: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "account"
     }
   },
@@ -48,7 +48,7 @@ let schema = new Schema(
   }
 );
 
-export let OAuthTokenModel = connections.db.model<IOAuthToken>(
+export default connections.db.model<IOAuthToken>(
   "oauthtoken",
   schema,
   "oauthtokens"

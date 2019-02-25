@@ -1,9 +1,11 @@
 import { Context } from "koa";
-import { OAuthTokenModel } from "../../models/oauth-token.model";
-import { UserModel } from "../../models/user.model";
-import { CustomerModel } from "../../models/customer.model";
-import RBAC from "./RBCA";
-import { RoleModel } from "../../models/role.model";
+import  OAuthTokenModel  from "../../models/oauth-token.model";
+import  UserModel  from "../../models/user.model";
+import  CustomerModel  from "../../models/customer.model";
+// import RBAC from "./RBCA";
+import  RoleModel,{ IRole } from "../../models/role.model";
+import AccountModel from "../../models/account.model";
+
 // Teste
 const opts = {
   user: {
@@ -39,22 +41,22 @@ export default class IsAuthendicatedMiddleware {
   constructor() {}
   // koa-ratelimit
   public static async use(ctx: Context, next: Function) {
-    if(!RBAC.isInitialized()){
-      let roles = await RoleModel.find({}).populate({path:'inherits'});
-      RBAC.create(roles);
-    }
-  //   roles.forEach(data,function(item,callback) {
-  //     User.populate(item.comments,{ "path": "user" },function(err,output) {
-  //         if (err) throw err; // or do something
+    // RBCA
+    // if(!RBAC.isInitialized()){
+    //   let roles = await RoleModel.find({}).populate({path:'inherits'});
+    //   RBAC.create(roles);
+    // }
+    // RBCA
+    //   roles.forEach(data,function(item,callback) {
+    //     User.populate(item.comments,{ "path": "user" },function(err,output) {
+    //         if (err) throw err; // or do something
 
-  //         callback();
-  //     });
-  // }, function(err) {
-  //     res.json(data);
-  // });
+    //         callback();
+    //     });
+    // }, function(err) {
+    //     res.json(data);
+    // });
 
-  
-    
     // rbac
     //   .can("user", "post:save", { userId: 1, ownerId: 2 })
     //   .then(result => {
@@ -85,7 +87,11 @@ export default class IsAuthendicatedMiddleware {
       let accessToken = await OAuthTokenModel.findOne({
         accessToken: bearerToken
       })
-        .populate({ path: "account", select: { password: 0 },populate: { path:  'role'} }) //Não traz esses dois campos
+        .populate({
+          path: "account",
+          select: { password: 0 },
+          populate: { path: 'role' }
+        }) //Não traz esses dois campos
         .lean();
 
       if (accessToken && accessToken.account) {
@@ -97,11 +103,11 @@ export default class IsAuthendicatedMiddleware {
           });
           if (customer) ctx.authendicated = customer;
         }
-        //TEste
-        let role = accessToken.account.role;
-        let result = await RBAC.getInstance().can(role.name, "account:*")
-        console.log('account:*=', result);  
-        //TEste
+        //RBCA
+        // let role = accessToken.account.role;
+        // let result = await RBAC.getInstance().can(role.name, "account:*")
+        // console.log('account:*=', result);
+        //RBCA
       }
     }
     await next();

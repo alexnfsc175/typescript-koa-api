@@ -1,7 +1,8 @@
 // https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
 import { Document, Schema, Types } from "mongoose";
 import * as connections from "../config/connection/connection";
-import { IOAuthClient } from './oauth-client.model';
+import OauthClientModel, { IOAuthClient } from './oauth-client.model';
+import AccountModel from "./account.model";
 
 export interface IOAuthCode extends Document {
   id?: any;
@@ -45,7 +46,7 @@ let schema = new Schema(
   }
 );
 
-export let OAuthCodeModel = connections.db.model<IOAuthCode>(
+export default connections.db.model<IOAuthCode>(
   "oauthcode",
   schema,
   "oauthcodes"

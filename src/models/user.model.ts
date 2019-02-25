@@ -1,7 +1,7 @@
 // https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
 import { Document, Schema, Model, Types } from "mongoose";
 import * as connections from "../config/connection/connection";
-import { IAccount } from "./account.model";
+import AccountModel, { IAccount } from "./account.model";
 
 export interface IUser extends Document {
   id?: any;
@@ -82,4 +82,4 @@ let schema = new Schema(
 //     this.populate('account');
 // });
 
-export let UserModel = connections.db.model<IUser>("user", schema, "users");
+export default connections.db.model<IUser>("user", schema, "users");

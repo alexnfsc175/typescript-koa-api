@@ -4,6 +4,7 @@ import * as Koa from 'koa';
 import Routes from '../router/routes';
 import Middleware from '../middleware';
 import { oauthServer } from '../../helpers/oauthServer';
+// import load from '../../helpers/loadFiles';
 // import Cron from '../cron/cron';
 
 
@@ -20,6 +21,7 @@ export class Server {
      * @memberof Server
      */
     constructor() {
+        // load('../models');
         this.app = new Koa();
         this.app.context.oauth = oauthServer;
         // Cron.init();

@@ -1,5 +1,5 @@
 // https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
-import { Document, Schema, Types } from "mongoose";
+import { Document, Schema, Types, model } from "mongoose";
 import * as connections from "../config/connection/connection";
 
 export interface IRole extends Document {
@@ -36,5 +36,4 @@ let schema = new Schema(
   }
 );
 
-// export let UserSchema = model<IRole>('user', schema, 'users', true);
-export let RoleModel = connections.db.model<IRole>("role", schema, "roles");
+export default connections.db.model<IRole>("role", schema, "roles");

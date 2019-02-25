@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { InvoiceModel } from "../models/invoice.model";
+import  InvoiceModel  from "../models/invoice.model";
 import InvoiceService from "../services/invoice.service";
 import LmxSP from "../helpers/LmxSP";
 

@@ -1,7 +1,7 @@
 "use strict";
 
 import { Context } from "koa";
-import { HolidayModel, IHoliday } from "../models/holiday.model";
+import HolidayModel, { IHoliday } from "../models/holiday.model";
 
 export default class HolidayController {
   static async save(ctx: Context, next: Function) {

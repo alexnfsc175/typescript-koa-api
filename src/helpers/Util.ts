@@ -103,6 +103,22 @@ export default class Util {
     // return `${days} dia(s) ${hours} hora(s) ${minutes} minuto(s) e ${seconds} segundo(s)`;
   }
 
+  createDateFromMysql(mysqlDate: string){
+    let [year, month, day, hour, minute, second]: any[] = mysqlDate.split(/[- :]/);
+
+      //when t[3], t[4] and t[5] are missing they defaults to zero
+      // return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);   
+      return moment({
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
+        millisecond: 1
+    });
+  }
+
   async getExpressRotes (options) {
     let app = options.express || {};
     let except = options.except || {};

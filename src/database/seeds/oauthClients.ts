@@ -1,6 +1,6 @@
 import { Migration } from "./Migrate";
 
-import { OAuthClientModel, IOAuthClient } from '../../models/oauth-client.model'
+import OAuthClientModel, { IOAuthClient } from '../../models/oauth-client.model'
 
 // const OAuthClients = [
 //     new OAuthClientModel({

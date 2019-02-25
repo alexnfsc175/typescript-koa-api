@@ -1,6 +1,6 @@
-import { IUser, UserModel } from "../models/user.model";
+import UserModel, { IUser } from "../models/user.model";
 import { Context } from "koa";
-import { OAuthClientModel } from "../models/oauth-client.model";
+import  OAuthClientModel  from "../models/oauth-client.model";
 
 /**
  * @export
@@ -20,9 +20,7 @@ export default class UserController {
   }
 
   static async authenticated(ctx: Context, next: Function) {
-    const users: IUser[] = await UserModel.find();
-
-    ctx.body = users;
+    ctx.body =  ctx.authendicated;
     ctx.status = 200;
   }
 

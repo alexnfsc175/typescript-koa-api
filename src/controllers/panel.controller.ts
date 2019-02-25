@@ -1,8 +1,8 @@
 "use strict";
 import * as moment from 'moment-timezone';
 import { Context } from "koa";
-import { PanelModel, IPanel } from "../models/panel.model";
-import { CustomerModel } from "../models/customer.model";
+import  PanelModel, { IPanel } from "../models/panel.model";
+import  CustomerModel  from "../models/customer.model";
 import LmxSP from "../helpers/LmxSP";
 import Util from "../helpers/Util";
 
@@ -32,14 +32,14 @@ export class PanelController {
       _id: id
     }).populate([
       {
-        path: "clients",
+        path: "customers",
         populate: {
-          path: "user",
+          path: "account",
           select: "-password -permissions" //Não traz esses dois campos
         }
       },
       {
-        path: "user",
+        path: "account",
         select: "-password -permissions" //Não traz esses dois campos
       }
     ]);
@@ -50,7 +50,7 @@ export class PanelController {
   static async update(ctx: Context, next: Function) {
     let params = ctx.request.body;
     let panel = await PanelModel.findById({
-      _id: params._id
+      _id: params.id
     });
 
     if (!panel) {
@@ -62,7 +62,7 @@ export class PanelController {
 
     let insert = await PanelModel.findOneAndUpdate(
       {
-        _id: params._id
+        _id: params.id
       },
       params
     );
@@ -92,7 +92,7 @@ export class PanelController {
       }
     })
       .populate({
-        path: "user",
+        path: "account",
         match: {
           active: true
         },
@@ -101,7 +101,7 @@ export class PanelController {
       .lean();
 
     clients = clients.filter(cli => {
-      return cli.user != null;
+      return cli.account != null;
     });
 
     ctx.body = clients;
@@ -115,54 +115,54 @@ export class PanelController {
     })
       .populate([
         {
-          path: "clients",
+          path: "customers",
           populate: {
-            path: "user",
+            path: "account",
             select: "-password -permissions" //Não traz esses dois campos
           }
         },
         {
-          path: "user",
+          path: "account",
           select: "-password -permissions" //Não traz esses dois campos
         }
       ])
       .lean();
 
-    let orders = await LmxSP.getInstance().getOrders(panel.clients);
+    let orders = await LmxSP.getInstance().getOrders(panel.customers);
 
-    let data: any = {};
-    data.logo = panel.urlLogo;
+    let response: any = {};
+    response.logo = panel.logo;
     if (orders.length) {
-      data.orders = orders.filter(order => {
+      response.orders = orders.filter(order => {
         return (
           ["ABERTO", "SOLICITADO", "CONFERENCIA"].indexOf(order.status) > -1
         );
       });
-      data.orders = data.orders.sort(function(a, b) {
+      response.orders = response.orders.sort(function(a, b) {
         return a.criacao - b.criacao;
       });
 
-      data.removals = orders.filter(order => {
+      response.removals = orders.filter(order => {
         return ["EXPEDIDO/AGUARD. RETIRA"].indexOf(order.status) > -1;
       });
     }
-    ctx.body = data;
+    ctx.body = response;
     ctx.status = 200;
   }
 
   //   Internal panel
   static async internalData(ctx: Context, next: Function) {
-    let customers = await CustomerModel.find().populate({
+    let customers = await CustomerModel.find({})
+    .populate({
       path: "account",
       match: {
         active: true
       }
     });
 
-    // parace ser desnecessaria
-    // customers = customers.filter(customers => {
-    //     return customers.account != null;
-    // });
+    customers = customers.filter(customers => {
+        return customers.account != null;
+    });
 
     let orders = await LmxSP.getInstance().getAllOrders(customers);
     let data: any = {};
@@ -177,7 +177,8 @@ export class PanelController {
         );
       });
 
-      orders = orders.filter(order => {
+      // Total de pedidos Separados no Mês
+      const separatedInMonth = orders.filter(order => {
         return (
           order.confirmacao &&
           order.confirmacao.year() == date.year() &&
@@ -186,12 +187,10 @@ export class PanelController {
         // return order.criacao.year() == date.year() && (order.criacao.month() == date.month() || order.confirmacao && order.confirmacao.year() == date.year() && order.confirmacao.month() == date.month());
       });
 
-      // Total de pedidos Separados no Mês
-      data.separatedInMonth = orders;
 
       // Percentage of separation in the Time
       // Porcentagem de separação no tempo
-      data.separatedInTime = data.separatedInMonth.filter(order => {
+      const separatedInTime = separatedInMonth.filter(order => {
         // se a data de confirmação ocorreu 48 depois da criação
         let d = order.criacao.clone();
 
@@ -263,8 +262,8 @@ export class PanelController {
 
       //Porcetagem de separação no prazo
       data.percentSeparatedInTime =
-        (100 * data.separatedInTime.length) / data.separatedInMonth.length;
-      data.totalSeparatedInMonth = data.separatedInMonth.length;
+        (100 * separatedInTime.length) / separatedInMonth.length;
+      data.totalSeparatedInMonth = separatedInMonth.length;
       data.totalWaitingSeparation = data.waitingSeparation.length;
     }
 

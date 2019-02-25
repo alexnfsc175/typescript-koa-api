@@ -39,15 +39,17 @@ let schema = new Schema(
 
 
 export let Attachment = null;
+export let AttachmentFile = null;
 connections.db.on("connected", () => {
   Attachment = gridfs({
     collection: "attachments",
     model: "attachment",
     mongooseConnection: connections.db
   });
+  AttachmentFile = Attachment.model;
 });
 
-export let AttachmentModel = connections.db.model<IAttachment>(
+export default connections.db.model<IAttachment>(
   "attachment",
   schema,
   "attachments.files"

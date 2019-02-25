@@ -43,7 +43,7 @@ let schema = new Schema(
   }
 );
 
-export let HolidayModel = connections.db.model<IHoliday>(
+export default connections.db.model<IHoliday>(
   "holiday",
   schema,
   "holidays"

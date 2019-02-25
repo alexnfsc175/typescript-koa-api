@@ -1,6 +1,7 @@
 import UserController from '../../controllers/user.controller';
 import * as Router from 'koa-router';
 import { oauthServer } from '../../helpers/oauthServer';
+import IsAuthendicatedMiddleware from '../middleware/is-authenticated.middleware';
 /**
  * @export
  * @class UserRouter
@@ -21,6 +22,7 @@ class UserRouter {
      * @memberof UserRouter
      */
     public routes(): void {
+        this.router.get('/authenticated',IsAuthendicatedMiddleware.use, UserController.authenticated);
         this.router.get('/', oauthServer.authenticate({scope:'admin', addAcceptedScopesHeader :true, addAuthorizedScopesHeader: true}) ,UserController.findAll);
         this.router.get('/:id', oauthServer.authenticate({scope:'admin', addAcceptedScopesHeader :true, addAuthorizedScopesHeader: true}), UserController.find);
         this.router.post('/', UserController.create);

@@ -1,9 +1,10 @@
 import * as request from "request-promise-native";
+import Util from "./Util";
 
 export default class LmxSP {
   private token = "kr93jgrbv7lw";
-  // private wms_url = 'http://ndev02.nuccitms.com.br';
-  private wms_url = "http://lmx.nuccierp.com.br";
+  private wms_url = 'http://ndev02.nuccitms.com.br';
+  // private wms_url = "http://lmx.nuccierp.com.br";
   private url = `${this.wms_url}/custom/wms/integracao/json`;
   private static _default: LmxSP;
 
@@ -37,25 +38,25 @@ export default class LmxSP {
 
       // try {
       if (data && data.length) {
-        data = this.flatten(data, "pedidos");
+        data = Util.getInstance().flatten(data, "pedidos");
         data.forEach((obj: any) => {
-          obj.criacao = obj.criacao ? this.convertToDate(obj.criacao) : null;
+          obj.criacao = obj.criacao ? Util.getInstance().createDateFromMysql(obj.criacao) : null;
 
-          obj.emissao = obj.emissao ? this.convertToDate(obj.emissao) : null;
+          obj.emissao = obj.emissao ? Util.getInstance().createDateFromMysql(obj.emissao) : null;
 
           obj.separacao = obj.separacao
-            ? this.convertToDate(obj.separacao)
+            ? Util.getInstance().createDateFromMysql(obj.separacao)
             : null;
 
           obj.confirmacao = obj.confirmacao
-            ? this.convertToDate(obj.confirmacao)
+            ? Util.getInstance().createDateFromMysql(obj.confirmacao)
             : null;
 
           obj.codigo_cli = clients.find(ele => ele.code == obj.codigo_cli);
 
           obj.historico
             ? obj.historico.forEach(h => {
-                h.data_historico = this.convertToDate(h.data_historico);
+                h.data_historico = Util.getInstance().createDateFromMysql(h.data_historico);
               })
             : null;
         });
@@ -100,11 +101,11 @@ export default class LmxSP {
       });
 
       if (data) {
-        data = this.flatten(data, "pedidos");
+        data = Util.getInstance().flatten(data, "pedidos");
         data.forEach(obj => {
-          obj.criacao = this.convertToDate(obj.criacao);
+          obj.criacao = Util.getInstance().createDateFromMysql(obj.criacao);
 
-          obj.emissao = this.convertToDate(obj.emissao);
+          obj.emissao = Util.getInstance().createDateFromMysql(obj.emissao);
 
           obj.codigo_cli = mapClient[obj.codigo_cli];
         });
@@ -128,7 +129,12 @@ export default class LmxSP {
     };
 
     try {
-      return request(options);
+      const data = await request(options);
+      data.clientes = data.clientes.map(c => ({
+        codigo: parseInt(c.codigo, 10),
+        nome: c.nome
+      }));
+      return Promise.resolve(data.clientes);
     } catch (e) {
       return Promise.reject(e);
     }
@@ -185,5 +191,5 @@ export default class LmxSP {
 
   convertToDate(date: string) {}
 
-  flatten(array: [], path: string) {}
+  // flatten(array: [], path: string) {}
 }

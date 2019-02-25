@@ -11,7 +11,7 @@ import UsersMiddleware from "./user.middleware";
 import { Context } from "koa";
 import Log from "../../helpers/Log";
 import FaviconMiddleware from "./favicon.middleware";
-import IsAuthendicatedMiddleware from "./authenticated.middleware";
+import IsAuthendicatedMiddleware from "./is-authenticated.middleware";
 /**
  * @export
  * @class Middleware
@@ -62,7 +62,7 @@ export default class Middleware {
 
     // my middlewares
     server.app.use(TimeMiddleware.use);
-    server.app.use(IsAuthendicatedMiddleware.use);
+    // server.app.use(IsAuthendicatedMiddleware.use);
     server.app.use(FaviconMiddleware.config())
 
     // cors

@@ -20,7 +20,7 @@ class WmsRouter {
    * @memberof WmsRouter
    */
   public routes(): void {
-    this.router.get("/customer", WmsController.getCustomer);
+    this.router.get("/customers", WmsController.getCustomer);
   }
 }
 

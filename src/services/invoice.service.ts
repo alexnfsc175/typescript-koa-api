@@ -1,6 +1,6 @@
 "use strict";
 import LmxSP from "../helpers/LmxSP";
-import { InvoiceModel, IInvoice } from "../models/invoice.model";
+import InvoiceModel, { IInvoice } from "../models/invoice.model";
 
 export default class InvoiceService {
   constructor(parameters) {}

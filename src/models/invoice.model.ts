@@ -21,8 +21,8 @@ export interface IInvoice extends Document {
   photos: {
     code: string;
     description: string;
-    url: string;
-    photoId: string;
+    // url: string;
+    attachmentId: string;
   }[];
 }
 
@@ -103,8 +103,7 @@ let schema = new Schema(
           sparse: true
         },
         description: String,
-        url: String,
-        photoId: String
+        attachmentId: String
       }
     ]
   },
@@ -119,7 +118,7 @@ let schema = new Schema(
   }
 );
 
-export let InvoiceModel = connections.db.model<IInvoice>(
+export default connections.db.model<IInvoice>(
   "invoice",
   schema,
   "invoices"

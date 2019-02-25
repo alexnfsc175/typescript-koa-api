@@ -2,7 +2,8 @@
 import * as bcrypt from 'bcrypt';
 import { Document, Schema, Types } from "mongoose"
 import * as connections from '../config/connection/connection';
-import { IRole } from './role.model';
+import RoleModel, { IRole } from './role.model';
+
 
 export interface IAccount extends Document {
     id?: any;
@@ -15,7 +16,9 @@ export interface IAccount extends Document {
     generateHash(password: any):string;
     validPassword(hash: string, password: any):boolean;
   }
+// Para careegar o model, estava dando erro no populate
 
+// let s = RoleModel.schema;
 let schema = new Schema({
     email: {
         type: String,
@@ -31,13 +34,12 @@ let schema = new Schema({
         type: Boolean,
         default: true,/// em produção Alterar
     },
-    type:{
+    type: {
         type: String
     },
-    role:{
-        type: Types.ObjectId,
-        ref: "role",
-        required: true
+    role: {
+        type: Schema.Types.ObjectId,
+        ref: "role"
     }
     // photo: {
     //     type: String
@@ -77,4 +79,4 @@ schema.pre<IAccount>('save', function ( next){
 });
 
 // export let UserSchema = model<IAccount>('user', schema, 'users', true);
-export let AccountModel = connections.db.model <IAccount>('account', schema, 'accounts');
+export default connections.db.model <IAccount>('account', schema, 'accounts');

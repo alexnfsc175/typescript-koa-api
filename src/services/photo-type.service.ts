@@ -1,7 +1,7 @@
 "use strict";
 
 import LmxSP from "../helpers/LmxSP";
-import { PhotoTypeModel } from "../models/photo-type.model";
+import  PhotoTypeModel  from "../models/photo-type.model";
 
 export default class PhotoService {
   constructor(parameters) {}

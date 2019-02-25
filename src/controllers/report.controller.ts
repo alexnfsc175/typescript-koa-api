@@ -2,7 +2,8 @@
 
 import { Context } from "koa";
 import PhotoService from "../services/photo-type.service";
-import { InvoiceModel } from "../models/invoice.model";
+import InvoiceModel  from "../models/invoice.model";
+import AttachmentModel, { Attachment, AttachmentFile} from "../models/attachment.model";
 import { PassThrough } from "stream";
 import Util from "../helpers/Util";
 // import * as multer from "koa-multer";
@@ -11,7 +12,6 @@ import { db } from "../config/connection/connection";
 import * as pdfmake from "pdfmake";
 import * as PdfPrinter from "pdfmake/src/printer";
 import * as busboy from "async-busboy";
-import { Attachment } from "../models/attachment.model";
 // instantiate mongoose-gridfs
 // let Attachment = null;
 // db.on("connected", () => {
@@ -48,7 +48,7 @@ export default class ReportController {
     let invoice = await InvoiceModel.findOne({
       number: ctx.params.invoiceNumber
     });
-    let photos = await this._getImages(invoice.photos);
+    let photos = await ReportController._getImages(invoice.photos);
 
     const printer = new PdfPrinter({
       Roboto: {
@@ -340,7 +340,7 @@ export default class ReportController {
         cnpj: invoice.cnpj,
         observation: invoice.observation,
         quantity_pallet: invoice.quantity_pallet,
-        quantity_boxes: invoice.quantity_pallet
+        quantity_boxes: invoice.quantity_boxes
       })
       // styles: {
       //     filledHeader: {
@@ -358,7 +358,8 @@ export default class ReportController {
 
     // Create the PDF and pipe it to the response object.
     var pdfDoc = printer.createPdfKitDocument(pdf);
-    pdfDoc.pipe(ctx.body);
+    ctx.status = 200;
+    ctx.body = pdfDoc;
     pdfDoc.end();
   }
 
@@ -435,44 +436,49 @@ export default class ReportController {
   // };
 
   static async exitReport(ctx: Context, next: Function) {}
-  static _getImages = async function(images) {
-    images = await Promise.all(
-      images.map(image => {
+  static _getImages = async function(photos) {
+    photos = await Promise.all(
+      photos.map(photo => {
         return new Promise((resolve, reject) => {
-          this.db.GridFS.findOne(
+          // const meta = await AttachmentModel.findOne({ _id: imageId });
+          AttachmentModel.findOne(
             {
-              _id: image.photoId,
-              root: `reports.photos`
+              _id: photo.attachmentId
             },
-            (err, file) => {
+            (err, meta) => {
               if (err) reject(err);
 
-              if (file) {
-                let readstream = this.db.GridFS.createReadStream({
-                  root: `reports.photos`,
-                  _id: image.photoId
-                });
+              if (meta) {
+                // let readstream = this.db.GridFS.createReadStream({
+                //   root: `reports.photos`,
+                //   _id: image.photoId
+                // });
+                const stream = Attachment.storage.openDownloadStream(meta._id);
 
-                readstream.on("error", error => {
+                stream.on("error", error => {
                   throw error;
                 });
 
                 const bufs = [];
-                readstream.on("data", function(chunk) {
+                stream.on("data", function(chunk) {
                   bufs.push(chunk);
                 });
-                readstream.on("end", function() {
+                stream.on("end", function() {
                   const fbuf = Buffer.concat(bufs);
                   const base64 = `data:${
-                    file.contentType
+                    meta.contentType
                   };base64,${fbuf.toString("base64")}`;
                   // let img = {
                   //     name: file.filename,
                   //     base64: base64
                   // }
-                  image.base64 = base64;
+                  // const image = {
+                  //   id: imageId,
+                  //   base64: base64
+                  // };
+                  photo.base64 = base64;
 
-                  resolve(image);
+                  resolve(photo);
                 });
               } else {
                 reject("Arquivo não existe");
@@ -524,7 +530,7 @@ export default class ReportController {
       })
     );
 
-    return images;
+    return photos;
 
     // const readstream = this.db.GridFS.createReadStream({
     //     _id: id,

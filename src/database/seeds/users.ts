@@ -1,8 +1,8 @@
-import { UserModel, IUser } from "../../models/user.model";
-import { AccountModel } from "../../models/account.model";
+import  UserModel, { IUser } from "../../models/user.model";
+import  AccountModel  from "../../models/account.model";
 import { Migration } from "./Migrate";
-import { OAuthClientModel } from "../../models/oauth-client.model";
-import { RoleModel } from "../../models/role.model";
+import OAuthClientModel  from "../../models/oauth-client.model";
+import RoleModel from "../../models/role.model";
 
 // const Users = [
 //   accountID =>
@@ -45,6 +45,12 @@ export default class UserMigration implements Migration<IUser> {
       inherits: [userRole._id]
     });
 
+    let customerRole = new RoleModel({
+      name: "customer",
+      can: ["panel:read"],
+    });
+
+    customerRole = await customerRole.save();
     managerRole = await managerRole.save();
 
     let account = new AccountModel({

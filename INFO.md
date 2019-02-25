@@ -3,9 +3,9 @@
     curl --get -v \
     –noproxy \
     'localhost:4955/oauth/authorize' \
-    -H "Authorization: Bearer a41c60a4c85632f38138c72b26b09cf83c7b806d" \
+    -H "Authorization: Bearer 5c92de0a00df9ca017cdeb104391f8bf01bca9b6" \
     -A 'curl/7.19.6 Rcurl/1.95.4.1 httr/1.3.1' \
-    --data-urlencode "client_id=typescript-koa" \
+    --data-urlencode "client_id=lmx-logistica" \
     --data-urlencode "response_type=code" \
     --data-urlencode "state=Alguma informacao para ser repassada" \
     --data-urlencode "redirect_uri=http://localhost:4955/oauth/callback"
@@ -15,8 +15,8 @@
         -d "grant_type=password" \
         -d "username=admin@admin.com.br" \
         -d "password=linux123" \
-        -d "client_id=typescript-koa" \
-        -d "client_secret=typescript@koa" \
+        -d "client_id=lmx-logistica" \
+        -d "client_secret=lmx-logistica@password" \
         -d "scope=admin" \
         -H "Content-Type: application/x-www-form-urlencoded"
 

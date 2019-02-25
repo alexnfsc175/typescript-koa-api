@@ -29,9 +29,9 @@ class PanelRouter {
     this.router.get("/available/customers", PanelController.availableCustomers);
 
     // Internal Panel Routes
-    this.router.get("/panel/internal/data", PanelController.internalData);
+    this.router.get("/internal/data", PanelController.internalData);
     // Operational Panel Routes
-    this.router.get("/panel/operational/data", PanelController.operationalData);
+    this.router.get("/operational/data", PanelController.operationalData);
   }
 }
 

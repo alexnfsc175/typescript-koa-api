@@ -1,4 +1,4 @@
-import { AccountModel, IAccount } from "../models/account.model";
+import  AccountModel , {IAccount } from "../models/account.model";
 import { Context } from "koa";
 
 /**

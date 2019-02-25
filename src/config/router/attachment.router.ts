@@ -21,6 +21,8 @@ class AttachmentRouter {
    */
   public routes(): void {
     this.router.get("/:id", AttachmentController.get);
+    this.router.delete("/:id", AttachmentController.delete);
+    this.router.post("/", AttachmentController.save);
   }
 }
 

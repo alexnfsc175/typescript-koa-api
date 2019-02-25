@@ -1,6 +1,6 @@
 import { Document, Schema, Types } from "mongoose";
 import * as connections from "../config/connection/connection";
-import { IAccount } from "./account.model";
+import AccountModel, { IAccount } from "./account.model";
 
 export interface ICustomer extends Document {
   id?: any;
@@ -21,7 +21,7 @@ let schema = new Schema(
       ref: "account",
       required: true
     },
-    urlLogo: {
+    logo: {
       type: String
     },
     code: {
@@ -43,7 +43,7 @@ let schema = new Schema(
   }
 );
 
-export let CustomerModel = connections.db.model<ICustomer>(
+export default connections.db.model<ICustomer>(
   "customer",
   schema,
   "customers"

@@ -10,6 +10,8 @@ import ReportRouter from "./report.router";
 import AttachmentRouter from "./attachment.router";
 import InvoiceRouter from "./invoice.router";
 import Util from "../../helpers/Util";
+import RoleRouter from "./role.router";
+import PanelRouter from "./panel.router";
 
 // https://github.com/sohamkamani/node-oauth-example/blob/master/index.js
 
@@ -87,6 +89,10 @@ export default class Routes {
       .use(mount("/api/v1/attachments", AttachmentRouter.router.routes()))
       .use(AttachmentRouter.router.allowedMethods())
       .use(mount("/api/v1/invoices", InvoiceRouter.router.routes()))
-      .use(InvoiceRouter.router.allowedMethods());
+      .use(InvoiceRouter.router.allowedMethods())
+      .use(mount("/api/v1/roles", RoleRouter.router.routes()))
+      .use(RoleRouter.router.allowedMethods())
+      .use(mount("/api/v1/panels", PanelRouter.router.routes()))
+      .use(PanelRouter.router.allowedMethods());
   }
 }

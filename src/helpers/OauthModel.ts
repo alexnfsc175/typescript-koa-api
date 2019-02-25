@@ -1,8 +1,8 @@
-import { OAuthClientModel, IOAuthClient } from "../models/oauth-client.model";
-import { OAuthTokenModel } from "../models/oauth-token.model";
-import { OAuthCodeModel } from "../models/oauth-code.model";
+import  OAuthClientModel, { IOAuthClient } from "../models/oauth-client.model";
+import  OAuthTokenModel  from "../models/oauth-token.model";
+import  OAuthCodeModel  from "../models/oauth-code.model";
 import { Client, Falsey, Token } from "oauth2-server";
-import { AccountModel, IAccount } from "../models/account.model";
+import  AccountModel, { IAccount } from "../models/account.model";
 import { createHash, randomBytes } from "crypto";
 
 class OAuthModel {
