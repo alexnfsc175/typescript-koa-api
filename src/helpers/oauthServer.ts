@@ -5,7 +5,7 @@ import { KoaOAuthServer } from './koaOauthServer'
 import { oAuthModel } from './OauthModel';
 
 export const oauthServer = new KoaOAuthServer({
-    scope: 'user.operational.finance.admin', // Alternatively string with required scopes (see verifyScope)
+    scope: 'account', // escopo de token necessario para qualquer requisição na aplicação
     model: oAuthModel,
     grants: ['password','authorization_code','refresh_token'],
     debug: true,

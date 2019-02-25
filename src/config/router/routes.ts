@@ -12,6 +12,8 @@ import InvoiceRouter from "./invoice.router";
 import Util from "../../helpers/Util";
 import RoleRouter from "./role.router";
 import PanelRouter from "./panel.router";
+import { Context } from "koa";
+import * as Router from "koa-router";
 
 // https://github.com/sohamkamani/node-oauth-example/blob/master/index.js
 
@@ -26,7 +28,7 @@ export default class Routes {
    * @memberof Routes
    */
   static init(server: IServer): void {
-    // const router: Router = new Router();
+    const router: Router = new Router();
 
     // users
     // router.use(mount('/user', UserRouter.router.routes()));
@@ -73,6 +75,10 @@ export default class Routes {
     // }));
     //TESTE
 
+    // server.app.use(mount('/api/*',oauthServer.authenticate()));
+    router.all(/^\/api\/v1\//igm, oauthServer.authenticate())
+    server.app.use(router.routes());
+    
     server.app
       .use(mount("/api/v1/users", UserRouter.router.routes()))
       .use(UserRouter.router.allowedMethods())

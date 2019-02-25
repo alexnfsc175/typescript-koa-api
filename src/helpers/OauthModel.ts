@@ -29,15 +29,21 @@ class OAuthModel {
   async getRefreshToken(refreshToken: string) {
     console.log("getRefreshToken");
 
+    // return OAuthTokenModel.findOne({ accessToken: bearerToken }).then(function(
+    //   token
+    // ) {
+
     let oauthtoken = await OAuthTokenModel.findOne({
       refreshToken: refreshToken
-    }).populate("client");
+    }).populate('client account');
 
     return Object.assign(
       {},
       { user: oauthtoken.account },
       oauthtoken.toObject()
     );
+
+    // return Object.assign({}, { user: token.account }, token.toObject());
   }
 
   async getUser(username: string, password: string, next: Function) {
@@ -73,6 +79,8 @@ class OAuthModel {
     client: Client,
     account: IAccount
   ): Promise<any> {
+    console.log('saveToken');
+    
     let accessToken = new OAuthTokenModel({
       accessToken: token.accessToken,
       accessTokenExpiresAt: token.accessTokenExpiresAt,
@@ -166,6 +174,8 @@ class OAuthModel {
   }
 
   getAccessToken(bearerToken: string) {
+    console.log('getAccessToken');
+    
     return OAuthTokenModel.findOne({ accessToken: bearerToken }).then(function(
       token
     ) {

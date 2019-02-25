@@ -22,7 +22,7 @@ export class HttpError extends Error {
 
         Error.captureStackTrace(this, this.constructor);
 
-        this.status = status || 500;
+        this.status = http.STATUS_CODES[status] ? status : 500;
         this.name = this.name;
         this.message = message || http.STATUS_CODES[this.status] || 'Error';
     }

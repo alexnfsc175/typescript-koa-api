@@ -57,7 +57,7 @@ export class KoaOAuthServer {
   }
 
   // Returns token authentication middleware
-  authenticate(options) {
+  authenticate(options?) {
     this.debug("Creating authentication endpoint middleware");
     return async (ctx, next) => {
       this.debug("Running authenticate endpoint middleware");

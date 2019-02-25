@@ -100,10 +100,10 @@ export default class Middleware {
           ctx.sendHttpError(error);
         } else {
           if (server.app.env === "development") {
-            error = new HttpError(500, error.message);
+            error = new HttpError(error.status, error.message);
             ctx.sendHttpError(error);
           } else {
-            error = new HttpError(500);
+            error = new HttpError(error.status);
             ctx.sendHttpError(error, error.message);
           }
         }
