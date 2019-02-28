@@ -3,7 +3,7 @@ import * as http from 'http';
 import Server from './server';
 import * as serverHandlers from './serverHandlers';
 
-debug('ts-express:server');
+debug('koa:server');
 
 const port: string | number | boolean = serverHandlers.normalizePort(process.env.API_PORT || 3000);
 

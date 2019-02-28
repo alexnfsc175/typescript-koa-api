@@ -1,7 +1,7 @@
 import { KoaOAuthServer } from "../helpers/koaOauthServer";
 import { BaseContext, BaseState } from "koa";
 import * as KoaRouter from "koa-router";
-import HttpError from "./error";
+import HttpError from "./error"; 
 
 declare module "koa" {
   /**

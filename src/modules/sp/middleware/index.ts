@@ -1,15 +1,15 @@
 import * as compression from "koa-compress";
 import * as cors from "@koa/cors";
-import * as serve from "koa-static"; 
+import * as serve from "koa-static";
 import * as koaBody from "koa-body";
-import * as mount from "koa-mount"; 
-import { CustomResponse, IServer } from "../interfaces/ServerInterface";
-import { HttpError } from "../error/index";
-import { sendHttpErrorModule } from "../error/sendHttpError";
+import * as mount from "koa-mount";
+import { CustomResponse, IServer } from "../../../config/interfaces/ServerInterface";
+import { HttpError } from "../../../config/error/index";
+import { sendHttpErrorModule } from "../../../config/error/sendHttpError";
 import TimeMiddleware from "./time.middleware";
 import UsersMiddleware from "./user.middleware";
-import { Context } from "koa";
-import Log from "../../helpers/Log";
+import { Context } from "koa"; 
+import Log from "../../../helpers/Log";
 import FaviconMiddleware from "./favicon.middleware";
 import IsAuthendicatedMiddleware from "./is-authenticated.middleware";
 /**

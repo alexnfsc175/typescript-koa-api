@@ -1,8 +1,8 @@
 // https://github.com/Thavarajan/Mangoose-Typescript-With-Repository-Pattern
 // https://github.com/lykmapipo/mongoose-gridfs
 import * as Koa from 'koa';
-import Routes from '../router/routes';
-import Middleware from '../middleware';
+import Routes from '../../modules/sp/router/routes';
+import Middleware from '../../config/middleware/index';
 import { oauthServer } from '../../helpers/oauthServer';
 // import load from '../../helpers/loadFiles';
 // import Cron from '../cron/cron';
