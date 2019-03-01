@@ -1,5 +1,6 @@
 import { Document, Schema } from "mongoose";
 import * as connections from "../connection/connection";
+import { ISubsidiary } from "./subsidiary.model";
 
 export interface IHoliday extends Document {
   id?: any;
@@ -10,6 +11,7 @@ export interface IHoliday extends Document {
     primary: string;
     secondary: string;
   };
+  company: ISubsidiary
 }
 
 let schema = new Schema(
@@ -30,7 +32,11 @@ let schema = new Schema(
       secondary: {
         type: String
       }
-    }
+    },
+    company: {
+      type: Schema.Types.ObjectId,
+      ref: 'subsidiary',
+    },
   },
   {
     timestamps: true,

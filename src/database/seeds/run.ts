@@ -1,6 +1,6 @@
 import { Migrate } from './Migrate';
 import UserMigration from './users';
-import * as connections from '../../config/connection/connection';
+import * as connections from '../../modules/sp/connection/connection';
 // import { OAuthClients } from './oauthClients';
 
 const migrate = new Migrate(connections);

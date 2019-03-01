@@ -1,4 +1,5 @@
-import AccountModel  from "../../models/account.model";
+import AccountModel from "../../modules/sp/models/account.model";
+
 
 const Accounts = [
   {

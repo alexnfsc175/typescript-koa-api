@@ -1,8 +1,9 @@
 // https://gist.github.com/brennanMKE/ee8ea002d305d4539ef6
-import { Document, Schema, Model, Types } from "mongoose";
-import * as connections from "../connection/connection";
-import AccountModel, { IAccount } from "./account.model";
-
+import { Document, Model, Schema, Types } from 'mongoose';
+import * as connections from '../connection/connection';
+import AccountModel, { IAccount } from './account.model';
+import SettingsModel, { ISettings } from './settings.model';
+import { ISubsidiary } from './subsidiary.model';
 export interface IUser extends Document {
   id?: any;
   name: string;
@@ -11,30 +12,32 @@ export interface IUser extends Document {
   phone: string;
   photo: string;
   account: IAccount;
+  companies: ISubsidiary[],
+  settings: ISettings
 }
 
-let schema = new Schema(
+const schema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "name is required"]
+      required: [true, 'name is required'],
     },
     birthDate: {
-      type: Date
+      type: Date,
     },
     gender: {
       type: String,
       uppercase: true,
-      default: "MALE",
-      enum: ["FEMALE", "MALE"],
+      default: 'MALE',
+      enum: ['FEMALE', 'MALE'],
       validate: {
-        validator: function(v) {
+        validator(v) {
           return /FEMALE|MALE/i.test(v);
           // return ['FEMALE', 'MALE'].indexOf(v) > -1;
         },
-        message: props => `${props.value} is not a valid gender!`
+        message: (props) => `${props.value} is not a valid gender!`,
       },
-      required: [true, "User gender required"]
+      required: [true, 'User gender required'],
     },
     phone: {
       type: String,
@@ -45,7 +48,7 @@ let schema = new Schema(
       //     },
       //     message: props => `${props.value} is not a valid phone number!`
       // },
-      required: [true, "User phone number required"]
+      required: [true, 'User phone number required'],
     },
     // location: {
     //     type: Geolocation.schema,
@@ -56,25 +59,29 @@ let schema = new Schema(
     //     index: '2dsphere'
     // }],
     photo: {
-      type: String
+      type: String,
     },
-    // settings: {
-    //     type: Settings.schema,
-    // }
+    settings: {
+        type: SettingsModel.schema,
+    },
     account: {
-      type: Types.ObjectId,
-      ref: "account"
-    }
+      type: Schema.Types.ObjectId,
+      ref: 'account',
+    },
+    companies: [{
+      type: Schema.Types.ObjectId,
+      ref: 'subsidiary',
+    }],
   },
   {
     timestamps: true,
     toObject: {
-      virtuals: true
+      virtuals: true,
     },
     toJSON: {
-      virtuals: true
-    }
-  }
+      virtuals: true,
+    },
+  },
 );
 
 // schema.pre('find', function () {
@@ -82,4 +89,4 @@ let schema = new Schema(
 //     this.populate('account');
 // });
 
-export default connections.db.model<IUser>("user", schema, "users");
+export default connections.db.model<IUser>('user', schema, 'users');

@@ -1,8 +1,11 @@
 import { Document, Schema, Types } from "mongoose";
 import * as connections from "../connection/connection";
+import { ISubsidiary } from "./subsidiary.model";
+
 
 export interface IInvoice extends Document {
   id?: any;
+  company: ISubsidiary
   number: string;
   client: string;
   cnpj: string;
@@ -28,6 +31,10 @@ export interface IInvoice extends Document {
 
 let schema = new Schema(
   {
+    company: {
+      type: Types.ObjectId,
+      ref: 'subsidiary',
+    },
     number: {
       type: String,
       required: true

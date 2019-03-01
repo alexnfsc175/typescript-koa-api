@@ -2,13 +2,18 @@ import { Document, Schema, Types } from "mongoose";
 import * as connections from "../connection/connection";
 import AccountModel, { IAccount } from "./account.model";
 
+import SettingsModel, { ISettings } from "./settings.model";
+import { ISubsidiary } from "./subsidiary.model";
+
 export interface ICustomer extends Document {
   id?: any;
   name: string;
   account: IAccount;
+  company: ISubsidiary; 
   urlLogo: string;
   code: Number;
   deliveryTime: Number;
+  settings: ISettings
 }
 
 let schema = new Schema(
@@ -21,6 +26,10 @@ let schema = new Schema(
       ref: "account",
       required: true
     },
+    company: {
+      type: Types.ObjectId,
+      ref: 'subsidiary',
+    },
     logo: {
       type: String
     },
@@ -30,6 +39,9 @@ let schema = new Schema(
     }, // Para alteração cad cli
     deliveryTime: {
       type: Number
+    },
+    settings: {
+      type: SettingsModel.schema,
     }
   },
   {

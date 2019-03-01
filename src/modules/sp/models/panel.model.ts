@@ -2,6 +2,7 @@ import { Document, Schema, Types } from 'mongoose';
 import * as connections from '../connection/connection';
 import AccountModel, { IAccount } from './account.model';
 import CustomerModel, { ICustomer } from './customer.model';
+import { ISubsidiary } from './subsidiary.model';
 
 export interface IPanel extends Document {
   id?: any;
@@ -9,7 +10,8 @@ export interface IPanel extends Document {
   name: string,
   urlLogo: string,
   customers: ICustomer[],
-  active: Boolean
+  active: Boolean,
+  company: ISubsidiary
 }
 
 let schema = new Schema(
@@ -18,6 +20,10 @@ let schema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'account',
       required: true
+    },
+    company: {
+      type: Types.ObjectId,
+      ref: 'subsidiary',
     },
     name: {
       type: String,

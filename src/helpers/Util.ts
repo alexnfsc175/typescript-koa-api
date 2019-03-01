@@ -1,4 +1,5 @@
 import * as moment from 'moment-timezone';
+moment.tz.setDefault("America/Sao_Paulo");
 
 export default class Util {
   private static _default: Util;
@@ -110,7 +111,7 @@ export default class Util {
       // return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);   
       return moment({
         year,
-        month,
+        month: month -1,
         day,
         hour,
         minute,

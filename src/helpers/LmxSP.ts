@@ -3,8 +3,8 @@ import Util from "./Util";
 
 export default class LmxSP {
   private token = "kr93jgrbv7lw";
-  private wms_url = 'http://ndev02.nuccitms.com.br';
-  // private wms_url = "http://lmx.nuccierp.com.br";
+  // private wms_url = 'http://ndev02.nuccitms.com.br';
+  private wms_url = "http://lmx.nuccierp.com.br";
   private url = `${this.wms_url}/custom/wms/integracao/json`;
   private static _default: LmxSP;
 

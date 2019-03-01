@@ -11,8 +11,8 @@ export default class LmxSP {
   }
   private static _default: LmxSP;
   private token = 'kr93jgrbv7lw';
-  private wms_url = 'http://ndev02.nuccitms.com.br';
-  // private wms_url = "http://lmx.nuccierp.com.br";
+  // private wms_url = 'http://ndev02.nuccitms.com.br';
+  private wms_url = "http://lmx.nuccierp.com.br";
   private url = `${this.wms_url}/custom/wms/integracao/json`;
 
   public async getAllOrders(clients) {
@@ -40,6 +40,7 @@ export default class LmxSP {
       if (data && data.length) {
         data = Util.getInstance().flatten(data, 'pedidos');
         data.forEach((obj: any) => {
+          obj.criacaoc =  obj.criacao;
           obj.criacao = obj.criacao
             ? Util.getInstance().createDateFromMysql(obj.criacao)
             : null;

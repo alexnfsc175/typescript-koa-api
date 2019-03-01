@@ -6,6 +6,12 @@ import  CustomerModel  from "../models/customer.model";
 import  RoleModel,{ IRole } from "../models/role.model";
 import AccountModel from "../models/account.model";
 
+// Somente para registrar o medel
+import subsidiaryModel from "../models/subsidiary.model";
+const s = subsidiaryModel.schema;
+// Somente para registrar o medel
+
+
 // Teste
 const opts = {
   user: {
@@ -95,7 +101,12 @@ export default class IsAuthendicatedMiddleware {
         .lean();
 
       if (accessToken && accessToken.account) {
-        let user = await UserModel.findOne({ account: accessToken.account });
+        let user = await UserModel.findOne({ account: accessToken.account }).populate({
+          path: "account companies settings.defaultCompany",
+          select: { password: 0 },
+          populate: { path: 'role' }
+        }) //Não traz esses dois campos
+        .lean();;
         if (user) ctx.authendicated = user;
         else {
           let customer = await CustomerModel.findOne({
